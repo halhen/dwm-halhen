@@ -377,10 +377,8 @@ applysizehints(Client *c, int *x, int *y, int *w, int *h, Bool interact) {
 		if(c->inch)
 			*h -= *h % c->inch;
 		/* restore base dimensions */
-		*w += c->basew;
-		*h += c->baseh;
-		*w = MAX(*w, c->minw);
-		*h = MAX(*h, c->minh);
+		*w = MAX(*w + c->basew, c->minw);
+		*h = MAX(*h + c->baseh, c->minh);
 		if(c->maxw)
 			*w = MIN(*w, c->maxw);
 		if(c->maxh)
@@ -805,7 +803,6 @@ drawtext(const char *text, unsigned long col[ColLast], Bool invert) {
 
 void
 enternotify(XEvent *e) {
-	Client *c;
 	Monitor *m;
 	XCrossingEvent *ev = &e->xcrossing;
 
@@ -815,10 +812,7 @@ enternotify(XEvent *e) {
 		unfocus(selmon->sel, True);
 		selmon = m;
 	}
-	if((c = wintoclient(ev->window)))
-		focus(c);
-	else
-		focus(NULL);
+	focus((wintoclient(ev->window)));
 }
 
 void
@@ -864,7 +858,7 @@ focusin(XEvent *e) { /* there are some broken focus acquiring clients */
 
 void
 focusmon(const Arg *arg) {
-	Monitor *m = NULL;
+	Monitor *m;
 
 	if(!mons->next)
 		return;
@@ -1119,9 +1113,7 @@ manage(Window w, XWindowAttributes *wa) {
 	*c = cz;
 	c->win = w;
 	updatetitle(c);
-	if(XGetTransientForHint(dpy, w, &trans))
-		t = wintoclient(trans);
-	if(t) {
+	if(XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
 		c->mon = t->mon;
 		c->tags = t->tags;
 	}
@@ -1136,7 +1128,7 @@ manage(Window w, XWindowAttributes *wa) {
 	c->h = c->oldh = wa->height;
 	c->oldbw = wa->border_width;
 	if(c->w == c->mon->mw && c->h == c->mon->mh) {
-		c->isfloating = 1;
+		c->isfloating = True;
 		c->x = c->mon->mx;
 		c->y = c->mon->my;
 		c->bw = 0;
@@ -1292,8 +1284,8 @@ propertynotify(XEvent *e) {
 		switch (ev->atom) {
 		default: break;
 		case XA_WM_TRANSIENT_FOR:
-			XGetTransientForHint(dpy, c->win, &trans);
-			if(!c->isfloating && (c->isfloating = (wintoclient(trans) != NULL)))
+			if(!c->isfloating && (XGetTransientForHint(dpy, c->win, &trans)) &&
+			   (c->isfloating = (wintoclient(trans)) != NULL))
 				arrange(c->mon);
 			break;
 		case XA_WM_NORMAL_HINTS:
@@ -1326,7 +1318,7 @@ clientmessage(XEvent *e) {
 			c->oldstate = c->isfloating;
 			c->oldbw = c->bw;
 			c->bw = 0;
-			c->isfloating = 1;
+			c->isfloating = True;
 			resizeclient(c, c->mon->mx, c->mon->my, c->mon->mw, c->mon->mh);
 			XRaiseWindow(dpy, c->win);
 		}
@@ -1820,7 +1812,6 @@ updategeom(void) {
 		XineramaScreenInfo *info = XineramaQueryScreens(dpy, &nn);
 		XineramaScreenInfo *unique = NULL;
 
-		info = XineramaQueryScreens(dpy, &nn);
 		for(n = 0, m = mons; m; m = m->next, n++);
 		/* only consider unique geometries as separate screens */
 		if(!(unique = (XineramaScreenInfo *)malloc(sizeof(XineramaScreenInfo) * nn)))
