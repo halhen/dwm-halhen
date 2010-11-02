@@ -4,7 +4,7 @@
 # are managed manually
 
 pkgname=dwm-halhen
-pkgver=5.8.2
+pkgver=5.9
 pkgrel=1
 pkgdesc="A dynamic window manager for X"
 url="http://dwm.suckless.org"
