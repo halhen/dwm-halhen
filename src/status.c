@@ -107,6 +107,7 @@ status_appendmailcount(char *stext, const char *separator, int maxlen)
     if (dir) {
         while(readdir(dir))
             numfiles += 1;
+        closedir(dir);
 
         if (numfiles > 0) 
             sprintf(mailstr, "%d new mail", numfiles);
