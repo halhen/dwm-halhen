@@ -19,6 +19,7 @@ build() {
   cp -R $startdir/src $startdir/build
   cd $startdir/build
 
+  make clean
   make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11 || return 1
   make PREFIX=/usr DESTDIR=$pkgdir install || return 1
 
