@@ -33,6 +33,8 @@ static const Layout layouts[] = {
 	{ "[M]",      monocle },
 };
 
+#include <status.c>
+
 /* key definitions */
 #define MODKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
