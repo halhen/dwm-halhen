@@ -1,7 +1,8 @@
 /* Functions to keep the dwm status bar updated within dwm itself.
    status_complete is called when it is time to update the status bar.
    
-   To configure: edit status_complete to your liking. 
+   To configure: edit status_complete to your liking. Then configure
+   status_nextupdatein to set how often the status bar should update.
 
    Compile with -DASTEST to enable testing. main() is then included
    and will create an executable that prints a couple of 
@@ -43,6 +44,14 @@ status_complete(char *stext, int maxlen)
 {
     const char* separator = " | ";
     status_appendtime(stext, "%T", separator, maxlen);
+}
+
+/* When should the status bar be updated next? This is called after an update,
+   to allow updates at e.g. top of the minute.*/
+static int
+status_nextupdatein()
+{
+    return 1;
 }
 
 #ifdef ASTEST
