@@ -133,7 +133,7 @@ status_complete(char *stext, int maxlen)
     status_appendmailcount(stext, separator, maxlen);
     status_appendtemperature(stext, separator, maxlen);
     status_appendbattery(stext, separator, maxlen);
-    status_appendtime(stext, "%T", separator, maxlen);
+    status_appendtime(stext, "%R", separator, maxlen);
 }
 
 /* When should the status bar be updated next? This is called after an update,
@@ -141,7 +141,11 @@ status_complete(char *stext, int maxlen)
 static int
 status_nextupdatein()
 {
-    return 1;
+	/* Update at the top of the minute */
+	time_t now = time(NULL);
+	struct tm *tminfo = localtime(&now);
+
+	return 60 - tminfo->tm_sec;
 }
 
 #ifdef ASTEST
