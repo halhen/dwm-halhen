@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/select.h>
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
@@ -1432,11 +1433,34 @@ restack(Monitor *m) {
 void
 run(void) {
 	XEvent ev;
+
+	fd_set in_fds;
+	struct timeval tv;
+	tv.tv_usec = 0;
+
+	int X11_fd = ConnectionNumber(dpy);
+	time_t now, next_update = time(NULL);
+
 	/* main event loop */
 	XSync(dpy, False);
-	while(running && !XNextEvent(dpy, &ev)) {
-		if(handler[ev.type])
-			handler[ev.type](&ev); /* call handler */
+	while(running) {
+		now = time(NULL);
+		if (next_update <= now) {
+			updatestatus();
+			next_update = now + 1;
+		}
+
+		FD_ZERO(&in_fds);
+		FD_SET(X11_fd, &in_fds);
+		tv.tv_sec = next_update - now;
+
+		if (XPending(dpy) || select(X11_fd+1, &in_fds, 0, 0, &tv)) {
+			while(XPending(dpy)) {
+				XNextEvent(dpy, &ev);
+				if(handler[ev.type])
+					handler[ev.type](&ev); /* call handler */
+			}
+		}
 	}
 }
 
@@ -1939,6 +1963,7 @@ void
 updatestatus(void) {
 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
 		strcpy(stext, "dwm-"VERSION);
+	status_complete(stext, sizeof(stext) - 1);
 	drawbar(selmon);
 }
 
