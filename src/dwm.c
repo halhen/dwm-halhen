@@ -1454,7 +1454,7 @@ run(void) {
 		now = time(NULL);
 		if (next_update <= now) {
 			updatestatus();
-			next_update = now + 1;
+			next_update = now + status_nextupdatein();
 		}
 
 		FD_ZERO(&in_fds);
