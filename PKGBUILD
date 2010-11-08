@@ -25,7 +25,4 @@ build() {
 
   install -m644 -D LICENSE $pkgdir/usr/share/licenses/$pkgname/LICENSE && \
   install -m644 -D README $pkgdir/usr/share/doc/$pkgname/README
-
-  cd ..
-  rm -rf build
 }

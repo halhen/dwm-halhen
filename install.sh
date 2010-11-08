@@ -7,4 +7,6 @@ echo "Building version $_version"
 
 makepkg -f -i
 rm -rf pkg
+rm -rf build
 rm *.pkg.tar.xz
+
