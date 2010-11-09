@@ -59,7 +59,7 @@ static const char *mediastop[]          = {"mocp", "--stop", NULL};
 static const char *medianext[]          = {"mocp", "--next", NULL};
 static const char *mediaprev[]          = {"mocp", "--previous", NULL};
 static const char *togglemouse[]        = {"xmouse", NULL};
-static const char *browser[]            = {"/bin/sh", "-c", "$BROWSER", NULL};
+static const char *browser[]            = {"luakit", NULL};
 
 static Key keys[] = {
 	/* modifier                     key                      function        argument */
