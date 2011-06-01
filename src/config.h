@@ -11,15 +11,16 @@ static const char selbgcolor[]      = "#222222";
 static const char selfgcolor[]      = "#fdb436";
 static const unsigned int borderpx  = 0;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
-static const Bool showbar           = False;     /* False means no bar */
+static const Bool showbar           = True;     /* False means no bar */
 static const Bool topbar            = True;     /* False means bottom bar */
 static const Bool viewontag         = True;     /* Switch view on tag switch */
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5" };
+static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
-	{ "Skype",    NULL,       NULL,      0 ,       True },
+	{ "Skype",    NULL,       NULL,      1 << 8,       True,  1  },
+	{ "Icedove",  NULL,       NULL,      0,            False, 0  },
 };
 
 /* layout(s) */
@@ -59,7 +60,7 @@ static const char *mediastop[]          = {"mocp", "--stop", NULL};
 static const char *medianext[]          = {"mocp", "--next", NULL};
 static const char *mediaprev[]          = {"mocp", "--previous", NULL};
 static const char *togglemouse[]        = {"xmouse", NULL};
-static const char *browser[]            = {"luakit", NULL};
+static const char *browser[]            = {"chromium-browser", NULL};
 
 static Key keys[] = {
 	/* modifier                     key                      function        argument */
@@ -71,6 +72,8 @@ static Key keys[] = {
     { 0,                            XF86XK_AudioStop,        spawn,          {.v = mediastop } },
     { 0,                            XF86XK_AudioNext,        spawn,          {.v = medianext } },
     { 0,                            XF86XK_AudioPrev,        spawn,          {.v = mediaprev } },
+    { ALTKEY|ControlMask,           XK_Left,                 shiftview,      {.i = -1 } },
+    { ALTKEY|ControlMask,           XK_Right,                shiftview,      {.i = 1 } },
 	{ MODKEY,                       XK_a,                    spawn,          {.v = togglemouse} },
 	{ MODKEY,                       XK_p,                    spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_b,                    spawn,          {.v = browser } },
@@ -93,6 +96,10 @@ static Key keys[] = {
 	{ MODKEY|ALTKEY|ShiftMask,      XK_q,                    quit,           {0} },
 	{ MODKEY,                       XK_0,                    view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,                    tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_comma,                focusmon,       {.i = -1 } },
+	{ MODKEY,                       XK_period,               focusmon,       {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_comma,                tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_period,               tagmon,         {.i = +1 } },
 	TAGKEYS(                        XK_1,                    0)
 	TAGKEYS(                        XK_2,                    1)
 	TAGKEYS(                        XK_3,                    2)
