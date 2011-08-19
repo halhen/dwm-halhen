@@ -59,6 +59,8 @@ static const char *mediatoggle[]        = {"mocp", "--play", NULL};
 static const char *mediastop[]          = {"mocp", "--stop", NULL};
 static const char *medianext[]          = {"mocp", "--next", NULL};
 static const char *mediaprev[]          = {"mocp", "--previous", NULL};
+static const char *monbrightnessup[]    = {"sudo", "/usr/local/sbin/backlight", "up", NULL};
+static const char *monbrightnessdown[]  = {"sudo", "/usr/local/sbin/backlight", "down", NULL};
 static const char *togglemouse[]        = {"xmouse", NULL};
 static const char *browser[]            = {"chromium-browser", NULL};
 
@@ -72,6 +74,8 @@ static Key keys[] = {
     { 0,                            XF86XK_AudioStop,        spawn,          {.v = mediastop } },
     { 0,                            XF86XK_AudioNext,        spawn,          {.v = medianext } },
     { 0,                            XF86XK_AudioPrev,        spawn,          {.v = mediaprev } },
+    { 0,                            XF86XK_MonBrightnessUp,  spawn,          {.v = monbrightnessup } },
+    { 0,                            XF86XK_MonBrightnessDown,spawn,          {.v = monbrightnessdown } },
     { ALTKEY|ControlMask,           XK_Left,                 shiftview,      {.i = -1 } },
     { ALTKEY|ControlMask,           XK_Right,                shiftview,      {.i = 1 } },
 	{ MODKEY,                       XK_a,                    spawn,          {.v = togglemouse} },
