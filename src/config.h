@@ -20,7 +20,7 @@ static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	{ "Skype",    NULL,       NULL,      1 << 8,       True,  1  },
-	{ "Icedove",  NULL,       NULL,      0,            False, 0  },
+	{ "Msgcompose",NULL,      NULL,      0,            True, -1  }, /* Thunderbird message window */
 };
 
 /* layout(s) */
@@ -61,6 +61,7 @@ static const char *medianext[]          = {"mocp", "--next", NULL};
 static const char *mediaprev[]          = {"mocp", "--previous", NULL};
 static const char *togglemouse[]        = {"xmouse", NULL};
 static const char *browser[]            = {"chromium-browser", NULL};
+static const char *lockscreen[]         = {"slock", NULL};
 
 static Key keys[] = {
 	/* modifier                     key                      function        argument */
@@ -77,6 +78,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_a,                    spawn,          {.v = togglemouse} },
 	{ MODKEY,                       XK_p,                    spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_b,                    spawn,          {.v = browser } },
+	{ MODKEY,                       XK_l,                    spawn,          {.v = lockscreen } },
 	{ MODKEY|ShiftMask,             XK_Return,               spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_s,                    togglebar,      {0} },
 	{ MODKEY,                       XK_Down,                 focusstack,     {.i = +1 } },
