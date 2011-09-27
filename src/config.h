@@ -60,7 +60,7 @@ static const char *mediastop[]          = {"mocp", "--stop", NULL};
 static const char *medianext[]          = {"mocp", "--next", NULL};
 static const char *mediaprev[]          = {"mocp", "--previous", NULL};
 static const char *togglemouse[]        = {"xmouse", NULL};
-static const char *browser[]            = {"chromium-browser", NULL};
+static const char *browser[]            = {"firefox", NULL};
 static const char *lockscreen[]         = {"slock", NULL};
 
 static Key keys[] = {
