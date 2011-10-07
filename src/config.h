@@ -64,6 +64,7 @@ static const char *monbrightnessdown[]  = {"sudo", "/usr/local/sbin/backlight", 
 static const char *togglemouse[]        = {"xmouse", NULL};
 static const char *browser[]            = {"firefox", NULL};
 static const char *lockscreen[]         = {"slock", NULL};
+static const char *wallpaper[]          = {"wallpaper", NULL};
 
 static Key keys[] = {
 	/* modifier                     key                      function        argument */
@@ -83,6 +84,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_p,                    spawn,          {.v = dmenucmd } },
 	{ MODKEY,                       XK_b,                    spawn,          {.v = browser } },
 	{ MODKEY,                       XK_l,                    spawn,          {.v = lockscreen } },
+	{ MODKEY,                       XK_w,                    spawn,          {.v = wallpaper } },
 	{ MODKEY|ShiftMask,             XK_Return,               spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_s,                    togglebar,      {0} },
 	{ MODKEY,                       XK_Down,                 focusstack,     {.i = +1 } },
