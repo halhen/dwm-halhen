@@ -20,7 +20,6 @@ static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
 static const Rule rules[] = {
 	{ "Skype",    NULL,       NULL,      1 << 8,       True,  1  },
-	{ "Msgcompose",NULL,      NULL,      0,            True, -1  }, /* Thunderbird message window */
 };
 
 /* layout(s) */
@@ -49,8 +48,8 @@ static const Layout layouts[] = {
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
 
 /* commands */
-static const char *dmenucmd[]           = { "dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]            = { "urxvt", "-e", "zsh", "-c", "tmux; zsh -i", NULL };
+static const char *dmenucmd[]           = {"dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
+static const char *termcmd[]            = {"xterm", "-e", "zsh", "-c", "tmux; zsh -i", NULL };
 static const char *togglescreenscmd[]   = {"xtogglescreens", NULL};
 static const char *raisevolcmd[]        = {"amixer", "-q", "set", "Master", "5%+", NULL};
 static const char *lowervolcmd[]        = {"amixer", "-q", "set", "Master", "5%-", NULL};
