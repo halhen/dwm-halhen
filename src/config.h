@@ -64,6 +64,7 @@ static const char *togglemouse[]        = {"xmouse", NULL};
 static const char *browser[]            = {"firefox", NULL};
 static const char *lockscreen[]         = {"slock", NULL};
 static const char *wallpaper[]          = {"wallpaper", NULL};
+static const char *menucmd[]            = {"mygtkmenu", "/home/henrik/.menu", NULL};
 
 static Key keys[] = {
 	/* modifier                     key                      function        argument */
@@ -134,4 +135,5 @@ static Button buttons[] = {
 	{ ClkTagBar,            0,              Button3,        toggleview,     {0} },
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
+	{ ClkRootWin,           0,              Button3,        spawn,          {.v = menucmd } },
 };
