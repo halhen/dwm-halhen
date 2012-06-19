@@ -51,7 +51,7 @@ status_appendtime(char *stext, const char* format, const char *separator, int ma
 static void
 status_appendbattery(char *stext, const char *separator, int maxlen)
 {
-    char battxt[5];
+    char battxt[6];
     battxt[0] = '\0';
 
     FILE *fp = fopen("/sys/class/power_supply/BAT0/status", "r");
@@ -59,20 +59,23 @@ status_appendbattery(char *stext, const char *separator, int maxlen)
         int status = fgetc(fp);
         fclose(fp);
 
-        switch (status) {
-            case 'F': /* Full */
-                strcpy(battxt, "100%");
-                break;
-            case 'C': /* Charging */
-            case 'D': /* Discharging */
-                {
-                    int now = readint("/sys/class/power_supply/BAT0/energy_now");
-                    int full = readint("/sys/class/power_supply/BAT0/energy_full");
+        int now = readint("/sys/class/power_supply/BAT0/energy_now");
+        int full = readint("/sys/class/power_supply/BAT0/energy_full");
 
-                    if (now > 0 && full > 0)
-                        sprintf(battxt, "%c%d%%", status == 'C' ? '+' : '-', (now-1)/((full)/100));
-                }
-                break;
+        if (now > 0 && full > 0) {
+            int charge = now/(full / 100);
+            char charge_char = 0x00;
+            if (status == 'C')
+                charge_char = '+';
+            else if (status == 'D')
+                charge_char = '-';
+
+            if (charge_char) {
+                sprintf(battxt, "%c%d%%", charge_char, charge);
+            }
+            else {
+                sprintf(battxt, "%d%%", charge);
+            }
         }
     }
 
@@ -130,7 +133,7 @@ status_appendmailcount(char *stext, const char *separator, int maxlen)
 static void
 status_complete(char *stext, int maxlen)
 {
-    const char* separator = " | ";
+    const char* separator = " >> ";
     status_appendmailcount(stext, separator, maxlen);
     status_appendtemperature(stext, separator, maxlen);
     status_appendbattery(stext, separator, maxlen);
