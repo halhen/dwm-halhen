@@ -49,7 +49,7 @@ static const Layout layouts[] = {
 
 /* commands */
 static const char *dmenucmd[]           = {"dmenu_run", "-fn", font, "-nb", normbgcolor, "-nf", normfgcolor, "-sb", selbgcolor, "-sf", selfgcolor, NULL };
-static const char *termcmd[]            = {"xterm", "-e", "zsh", "-c", "tmux; zsh -i", NULL };
+static const char *termcmd[]            = {"uxterm", "-e", "zsh", "-c", "tmux; zsh -i", NULL };
 static const char *togglescreenscmd[]   = {"xtogglescreens", NULL};
 static const char *raisevolcmd[]        = {"amixer", "-q", "set", "Master", "5%+", NULL};
 static const char *lowervolcmd[]        = {"amixer", "-q", "set", "Master", "5%-", NULL};
