@@ -24,24 +24,29 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact      = 0.55; /* factor of master area size [0.05..0.95] */
+static const int nmaster      = 1;    /* number of clients in master area */
 static const Bool resizehints = False; /* True means respect size hints in tiled resizals */
+
+/* Added source files */
+#include "fibonacci.c"
+#include "shiftview.c"
+#include "status.c"
 
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	{ "[]=",      tile },    /* first entry is default */
+    { "(@)",      spiral },  /* first entry is default */
+	{ "[]=",      tile },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	{ "[M]",      monocle },
 };
 
-#include <status.c>
 
 /* key definitions */
 #define MODKEY Mod4Mask
 #define ALTKEY Mod1Mask
 #define TAGKEYS(KEY,TAG) \
-	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
+	{ MODKEY,                       KEY,      comboview,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      toggleview,     {.ui = 1 << TAG} }, \
-	{ MODKEY|ControlMask,           KEY,      tag,            {.ui = 1 << TAG} }, \
+	{ MODKEY|ControlMask,           KEY,      combotag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
@@ -91,6 +96,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Up,                   focusstack,     {.i = -1 } },
 	{ MODKEY,                       XK_Left,                 focusstack,     {.i = -1} },
 	{ MODKEY,                       XK_Right,                focusstack,     {.i = +1} },
+	{ MODKEY,                       XK_i,                    incnmaster,     {.i = +1 } },
+	{ MODKEY,                       XK_d,                    incnmaster,     {.i = -1 } },
 	{ MODKEY,                       XK_minus,                setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_plus,                 setmfact,       {.f = +0.05} },
 	{ MODKEY,                       XK_Return,               zoom,           {0} },

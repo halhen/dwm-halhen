@@ -1,0 +1,11 @@
+--- src/config.mk	2012-06-30 22:22:15.263125536 +0200
++++ /tmp/m/config.mk	2012-06-30 22:44:59.766561352 +0200
+@@ -4,7 +4,7 @@
+ # Customize below to fit your system
+ 
+ # paths
+-PREFIX = /usr/local
++PREFIX = /usr
+ MANPREFIX = ${PREFIX}/share/man
+ 
+ X11INC = /usr/X11R6/include
