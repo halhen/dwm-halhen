@@ -1,5 +1,5 @@
-This is my setup for [dwm](http://dwm.suckless.org). I keep a copy of upstream in the `upstream` branch, to which I fetch the lastest source every now and again. On `master`, I keep what I use on my computer. Here, I apply patches and edit my config.h and merge from `upstream`.
+This is my setup for [dwm](http://dwm.suckless.org). In src/, the original dwm source is kept. It can be updated through `./pull_upstream.h`. Changes to vanilla dwm are kept as individual patches in `patch/`.
 
-My version updates the status bar internally. Here, I keep some stuff like a clock and battery life. This is appended to the regular status message, set through the X root window name, and is updated regularly internally. The base functionality was built on the `builtin-status` branch, where you can see how it works and from which you can generate a patch.
+My version updates the status bar internally (`status-bar.patch`). Here, I keep some stuff like a clock and battery life. This is appended to the regular status message, set through the X root window name, and is updated regularly internally.
 
-Since I use Arch Linux, I keep a PKGBUILD to build and install the package from the local source. `install.sh` is a small helper that updates the version number if needed, and cleans up the directory after `makepkg`.
+Since I use Arch Linux, I keep a PKGBUILD to build and install the package from the local source. `install.sh` is a small helper that updates the version number if needed, copies all source to a temporary directory, applies the patches in patch/, and finally builds and installs everything.
