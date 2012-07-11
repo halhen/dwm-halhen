@@ -1,8 +1,7 @@
-diff --git a/src/dwm.c b/src/dwm.c
-index 6b39519..90209b1 100644
---- a/dwm.c
-+++ b/dwm.c
-@@ -1447,11 +1447,34 @@ restack(Monitor *m) {
+diff -Naur /tmp/dwm2/src/dwm.c src/dwm.c
+--- /tmp/dwm2/src/dwm.c	2012-07-11 20:25:13.733157465 +0200
++++ src/dwm.c	2012-07-11 19:56:57.659697028 +0200
+@@ -1518,11 +1518,34 @@
  void
  run(void) {
  	XEvent ev;
@@ -40,7 +39,7 @@ index 6b39519..90209b1 100644
  }
  
  void
-@@ -2029,7 +2052,8 @@ updatetitle(Client *c) {
+@@ -2125,7 +2148,8 @@
  void
  updatestatus(void) {
  	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
@@ -50,12 +49,61 @@ index 6b39519..90209b1 100644
  	drawbar(selmon);
  }
  
-diff --git a/src/status.c b/src/status.c
-new file mode 100644
-index 0000000..4cc732a
---- /dev/null
-+++ b/status.c
-@@ -0,0 +1,181 @@
+diff -Naur /tmp/dwm2/src/dwm.c.orig src/dwm.c.orig
+--- /tmp/dwm2/src/dwm.c.orig	2012-07-11 20:25:13.726490801 +0200
++++ src/dwm.c.orig	2012-07-11 19:56:57.656363695 +0200
+@@ -1518,11 +1518,34 @@
+ void
+ run(void) {
+ 	XEvent ev;
++
++    fd_set in_fds;
++    struct timeval tv;
++    tv.tv_usec = 0;
++
++    int X11_fd = ConnectionNumber(dpy);
++    time_t now, next_update = time(NULL);
+ 	/* main event loop */
+ 	XSync(dpy, False);
+-	while(running && !XNextEvent(dpy, &ev))
+-		if(handler[ev.type])
+-			handler[ev.type](&ev); /* call handler */
++	while(running) {
++        now = time(NULL);
++        if (next_update <= now) {
++            updatestatus();
++            next_update = now + status_nextupdatein();
++        }
++
++        FD_ZERO(&in_fds);
++        FD_SET(X11_fd, &in_fds);
++        tv.tv_sec = next_update - now;
++
++        if (XPending(dpy) || select(X11_fd +1, &in_fds, 0, 0, &tv)) {
++            while(XPending(dpy)) {
++                XNextEvent(dpy, &ev);
++                if(handler[ev.type])
++                    handler[ev.type](&ev); /* call handler */
++            }
++        }
++	}
+ }
+ 
+ void
+@@ -2123,7 +2146,8 @@
+ void
+ updatestatus(void) {
+ 	if(!gettextprop(root, XA_WM_NAME, stext, sizeof(stext)))
+-		strcpy(stext, "dwm-"VERSION);
++		strcpy(stext, "");
++    status_complete(stext, sizeof(stext) - 1);
+ 	drawbar(selmon);
+ }
+ 
+diff -Naur /tmp/dwm2/src/status.c src/status.c
+--- /tmp/dwm2/src/status.c	1970-01-01 01:00:00.000000000 +0100
++++ src/status.c	2012-07-11 20:37:40.089880065 +0200
+@@ -0,0 +1,171 @@
 +/* Functions to keep the dwm status bar updated within dwm itself.
 +   status_complete is called when it is time to update the status bar.
 +
@@ -145,41 +193,32 @@ index 0000000..4cc732a
 +    }
 +}
 +
++/* netcfg connected network */
 +static void
-+status_appendtemperature(char *stext, const char *separator, int maxlen)
++status_appendnetwork(char *stext, const char *separator, int maxlen)
 +{
-+    char tempstr[5];
-+    int temp = readint("/sys/class/thermal/thermal_zone0/temp");
++    char netsstr[256];
++    char *filename;
++    DIR *dir=opendir("/run/network/profiles");
++    struct dirent *ent;
 +
-+    if (temp > 0) {
-+        if (stext[0] != '\0')
-+            strlcat(stext, separator, maxlen);
-+        sprintf(tempstr, "%dC", temp / 1000);
-+        strlcat(stext, tempstr, temp);
-+    }
-+}
-+
-+static void
-+status_appendmailcount(char *stext, const char *separator, int maxlen)
-+{
-+    char mailstr[20];
-+    int numfiles = -2; /* Don't count .. and . */
-+    DIR *dir = opendir("/home/henrik/.mail/INBOX/new");
-+
++    netsstr[0] = '\0';
 +    if (dir) {
-+        while(readdir(dir))
-+            numfiles += 1;
++        while((ent=readdir(dir)) != NULL) {
++            filename = ent->d_name;
++            if (filename[0] != '.') {
++                strlcat(netsstr, ent->d_name, sizeof(netsstr) - 1);
++                strlcat(netsstr, " ", sizeof(netsstr) - 1);
++            }
++        }
 +        closedir(dir);
 +
-+        if (numfiles > 0) 
-+            sprintf(mailstr, "%d new mail", numfiles);
-+        if (numfiles > 1)
-+            strcat(mailstr, "s");	
-+
-+        if (numfiles > 0) {
++        if (netsstr[0] != '\0') {
++            /* Remove space after last network */
++            netsstr[strlen(netsstr)-1] = '\0';
 +            if (stext[0] != '\0')
 +                strlcat(stext, separator, maxlen);
-+            strlcat(stext, mailstr, maxlen);
++            strlcat(stext, netsstr, maxlen);
 +        }
 +    }
 +}
@@ -193,8 +232,7 @@ index 0000000..4cc732a
 +status_complete(char *stext, int maxlen)
 +{
 +    const char* separator = " >> ";
-+    status_appendmailcount(stext, separator, maxlen);
-+    status_appendtemperature(stext, separator, maxlen);
++    status_appendnetwork(stext, separator, maxlen);
 +    status_appendbattery(stext, separator, maxlen);
 +    status_appendtime(stext, "%R", separator, maxlen);
 +}
